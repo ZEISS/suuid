@@ -16,21 +16,26 @@ func (s *SUUID) String() string {
 	return s.data
 }
 
+// Parse is the representation of the SUUID from a string.
+func Parse(in string) *SUUID {
+	return &SUUID{data: in}
+}
+
 // MarshalUUID is the representation of the UUID as a SUUID.
 func (s *SUUID) MarshalUUID(u uuid.UUID) error {
-	b, err := u.MarshalBinary()
+	b, err := u.MarshalText()
 	if err != nil {
 		return err
 	}
 
-	s.data = base64.URLEncoding.EncodeToString(b)[:22]
+	s.data = base64.URLEncoding.EncodeToString(b)
 
 	return nil
 }
 
 // UnmarshalUUID is the uuid prepresentation of the SUUID.
 func (s *SUUID) UnmarshalUUID() (uuid.UUID, error) {
-	id, err := base64.URLEncoding.DecodeString(s.data + "==")
+	id, err := base64.URLEncoding.DecodeString(s.data)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
